@@ -13,7 +13,6 @@ type MqGroup struct {
 
 func New() (*MqGroup, error) {
 	mu := new(sync.RWMutex)
-
 	rabbitmq := &MqGroup{
 		nodeList: make([]*MqNode, 0),
 		mu:       mu,
