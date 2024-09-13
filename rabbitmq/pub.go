@@ -2,6 +2,7 @@ package rabbitmq
 
 import (
 	"context"
+	"encoding/json"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"reflect"
 )
@@ -34,9 +35,15 @@ func (j *JsonMsg) Pub(ctx *context.Context, req *PubReq, msg interface{}) error 
 	if err != nil {
 		return err
 	}
-	err = ch.PublishWithContext(*ctx, j.ExchangeName, req.RouterKey, false, false, amqp.Publishing{
-		Body: msg.([]byte),
-	})
+	data, err := json.Marshal(msg)
+	if err != nil {
+		return err
+	}
+	err = ch.PublishWithContext(*ctx, j.ExchangeName, req.RouterKey, false, false,
+		amqp.Publishing{
+			ContentType: "text/plain",
+			Body:        data,
+		})
 	if err != nil {
 		return err
 	}
