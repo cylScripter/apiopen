@@ -20,6 +20,7 @@ func New() (*MqGroup, error) {
 	return rabbitmq, nil
 }
 
+// k
 func (g *MqGroup) AddNode(node *MqNode) {
 
 	g.nodeList = append(g.nodeList, node)
