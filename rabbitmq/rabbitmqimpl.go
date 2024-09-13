@@ -21,14 +21,11 @@ func New() (*MqGroup, error) {
 }
 
 func (g *MqGroup) AddNode(node *MqNode) {
-	g.Mu.RLock()
-	defer g.Mu.RUnlock()
+
 	g.nodeList = append(g.nodeList, node)
 }
 
 func (g *MqGroup) GetNode(group int32) *MqNode {
-	g.Mu.Lock()
-	defer g.Mu.Unlock()
 	if group >= int32(len(g.nodeList)) {
 		return nil
 	}
