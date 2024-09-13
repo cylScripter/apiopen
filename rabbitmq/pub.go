@@ -1,0 +1,44 @@
+package rabbitmq
+
+import (
+	"context"
+	amqp "github.com/rabbitmq/amqp091-go"
+	"reflect"
+)
+
+type JsonMsg struct {
+	*MqGroup
+	ExchangeName string
+	Group        int32
+	MsgType      reflect.Type
+}
+
+func NewJsonMsg(rabbit *MqGroup, exchangeName string, msgType interface{}) *JsonMsg {
+	p := &JsonMsg{
+		MqGroup:      rabbit,
+		ExchangeName: exchangeName,
+	}
+	t := reflect.TypeOf(msgType)
+	for t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
+	if t.Kind() != reflect.Struct {
+		panic("invalid type, expect struct")
+	}
+	p.MsgType = t
+	return p
+}
+
+func (j *JsonMsg) Pub(ctx *context.Context, req *PubReq, msg interface{}) error {
+	ch, err := j.GetNode(req.Group).Channel()
+	if err != nil {
+		return err
+	}
+	err = ch.PublishWithContext(*ctx, j.ExchangeName, req.RouterKey, false, false, amqp.Publishing{
+		Body: msg.([]byte),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
