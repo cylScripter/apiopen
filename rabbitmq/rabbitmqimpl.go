@@ -8,25 +8,29 @@ import (
 
 type MqGroup struct {
 	nodeList []*MqNode
-	Mu       *sync.RWMutex
+	mu       *sync.RWMutex
 }
 
 func New() (*MqGroup, error) {
 	Mu := &sync.RWMutex{}
 	rabbitmq := &MqGroup{
 		nodeList: make([]*MqNode, 0),
-		Mu:       Mu,
+		mu:       Mu,
 	}
 	return rabbitmq, nil
 }
 
 // k
 func (g *MqGroup) AddNode(node *MqNode) {
+	g.mu.Lock()
+	defer g.mu.Unlock()
 
 	g.nodeList = append(g.nodeList, node)
 }
 
 func (g *MqGroup) GetNode(group int32) *MqNode {
+	g.mu.RLock()
+	defer g.mu.RUnlock()
 	if group >= int32(len(g.nodeList)) {
 		return nil
 	}
