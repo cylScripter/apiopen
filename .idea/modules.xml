@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/apiopen.iml" filepath="$PROJECT_DIR$/.idea/apiopen.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../idl/.idea/idl.iml" filepath="$PROJECT_DIR$/../../../idl/.idea/idl.iml" />
     </modules>
   </component>
 </project>
