@@ -49,12 +49,17 @@ type NodeConfig struct {
 type MqNode struct {
 	config  NodeConfig
 	conn    *amqp.Connection
-	channel sync.Map
+	channel *sync.Map
 }
 
 // NewRabbitMQNode 创建一个新的 ConnectionManager
 func NewRabbitMQNode(config NodeConfig) (*MqNode, error) {
-	cm := &MqNode{config: config}
+	cm := &MqNode{
+		config: config,
+	}
+
+	cm.channel = &sync.Map{}
+
 	var err error
 	cm.conn, err = amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%d/%s", config.User, config.Password, config.Host, config.Port, config.VHost))
 	if err != nil {
