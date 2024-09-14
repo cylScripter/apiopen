@@ -20,7 +20,6 @@ func New() (*MqGroup, error) {
 	return rabbitmq, nil
 }
 
-// k
 func (g *MqGroup) AddNode(node *MqNode) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
@@ -48,8 +47,9 @@ type NodeConfig struct {
 
 // MqNode 负责管理 RabbitMQ 的连接
 type MqNode struct {
-	config NodeConfig
-	conn   *amqp.Connection
+	config  NodeConfig
+	conn    *amqp.Connection
+	channel sync.Map
 }
 
 // NewRabbitMQNode 创建一个新的 ConnectionManager
@@ -69,6 +69,18 @@ func (cm *MqNode) Close() error {
 }
 
 // Channel 获取一个新的 Channel
-func (cm *MqNode) Channel() (*amqp.Channel, error) {
-	return cm.conn.Channel()
+func (cm *MqNode) Channel(name string) (*amqp.Channel, error) {
+	// 尝试从缓存中获取已存在的通道
+	if ch, ok := cm.channel.Load(name); ok {
+		return ch.(*amqp.Channel), nil
+	}
+
+	// 如果不存在，则创建新的通道
+	newCh, err := cm.conn.Channel()
+	if err != nil {
+		return nil, err
+	}
+	// 将新创建的通道存入缓存
+	cm.channel.Store(name, newCh)
+	return newCh, nil
 }

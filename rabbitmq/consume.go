@@ -21,12 +21,12 @@ func NewConsumer(rabbit *MqGroup, group int32) *Consumer {
 type Queue struct {
 	Retry         bool
 	Name          string
-	handlerFunc   ConsumeFunc
-	handlerFuncV2 ConsumeFuncV2
+	HandlerFunc   ConsumeFunc
+	HandlerFuncV2 ConsumeFuncV2
 }
 
 func (c *Consumer) AddQueue(ctx *context.Context, queue Queue) error {
-	ch, err := c.GetNode(c.Group).Channel()
+	ch, err := c.GetNode(c.Group).Channel(queue.Name)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (c *Consumer) AddQueue(ctx *context.Context, queue Queue) error {
 			req.Data = msg.Body
 			req.MsgId = msg.MessageId
 			req.CreatedAt = int32(now.Unix())
-			err = queue.handlerFunc(ctx, req)
+			err = queue.HandlerFunc(ctx, req)
 			if err != nil {
 				klog.Errorf("consume error %v", err)
 				return
