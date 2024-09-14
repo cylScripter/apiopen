@@ -31,7 +31,7 @@ func NewJsonMsg(rabbit *MqGroup, exchangeName string, msgType interface{}) *Json
 }
 
 func (j *JsonMsg) Pub(ctx *context.Context, req *PubReq, msg interface{}) error {
-	ch, err := j.GetNode(req.Group).Channel()
+	ch, err := j.GetNode(req.Group).Channel(req.RouterKey)
 	if err != nil {
 		return err
 	}
