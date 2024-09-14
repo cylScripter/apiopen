@@ -114,7 +114,7 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) GetUserList(ctx context.Context, req *admin.GetUserListReq) (r *admin.GetUserListResp, err error) {
+func (p *kClient) GetUserList(ctx context.Context, req *admin.GetUserReq) (r *admin.GetUserResp, err error) {
 	var _args admin.AdminGetUserListArgs
 	_args.Req = req
 	var _result admin.AdminGetUserListResult

@@ -11,7 +11,7 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	GetUserList(ctx context.Context, req *admin.GetUserListReq, callOptions ...callopt.Option) (r *admin.GetUserListResp, err error)
+	GetUserList(ctx context.Context, req *admin.GetUserReq, callOptions ...callopt.Option) (r *admin.GetUserResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -43,7 +43,7 @@ type kAdminClient struct {
 	*kClient
 }
 
-func (p *kAdminClient) GetUserList(ctx context.Context, req *admin.GetUserListReq, callOptions ...callopt.Option) (r *admin.GetUserListResp, err error) {
+func (p *kAdminClient) GetUserList(ctx context.Context, req *admin.GetUserReq, callOptions ...callopt.Option) (r *admin.GetUserResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetUserList(ctx, req)
 }

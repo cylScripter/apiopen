@@ -5,7 +5,7 @@ package hello
 import (
 	"context"
 	"fmt"
-	"github.com/apache/thrift/lib/go/thrift"
+	thrift "github.com/cloudwego/kitex/pkg/protocol/bthrift/apache"
 	"strings"
 )
 

@@ -6,7 +6,7 @@ import (
 	"github.com/cylScripter/apiopen/admin"
 )
 
-func GetUserList(ctx context.Context, req *admin.GetUserListReq, callOptions ...client.Option) (resp *admin.GetUserListResp, err error) {
+func GetUserList(ctx context.Context, req *admin.GetUserReq, callOptions ...client.Option) (resp *admin.GetUserResp, err error) {
 	clients := MustNewClient("admin", callOptions...)
 	return clients.GetUserList(ctx, req)
 }
