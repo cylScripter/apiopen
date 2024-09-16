@@ -20,20 +20,27 @@ func New() (*MqGroup, error) {
 	return rabbitmq, nil
 }
 
-func (g *MqGroup) AddNode(node *MqNode) {
+func (g *MqGroup) addNode(node *MqNode) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
 	g.nodeList = append(g.nodeList, node)
 }
 
-func (g *MqGroup) GetNode(group int32) *MqNode {
+func (g *MqGroup) getNode(group int32) *MqNode {
 	g.mu.RLock()
 	defer g.mu.RUnlock()
 	if group >= int32(len(g.nodeList)) {
 		return nil
 	}
 	return g.nodeList[group]
+}
+func AddNode(mq *MqGroup, node *MqNode) {
+	mq.addNode(node)
+}
+
+func GetNode(mq *MqGroup, group int32) *MqNode {
+	return mq.getNode(group)
 }
 
 // NodeConfig 定义了 RabbitMQ 的配置信息

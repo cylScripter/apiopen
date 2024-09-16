@@ -3,6 +3,7 @@ package rabbitmq
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"reflect"
 )
@@ -31,7 +32,11 @@ func NewJsonMsg(rabbit *MqGroup, exchangeName string, msgType interface{}) *Json
 }
 
 func (j *JsonMsg) Pub(ctx *context.Context, req *PubReq, msg interface{}) error {
-	ch, err := j.GetNode(req.Group).Channel(req.RouterKey)
+	// 检查msg的类型是否与预期的MsgType一致
+	if reflect.TypeOf(msg) != j.MsgType {
+		return fmt.Errorf("invalid message type, expected %v", j.MsgType)
+	}
+	ch, err := j.getNode(req.Group).Channel(req.RouterKey)
 	if err != nil {
 		return err
 	}
@@ -43,6 +48,7 @@ func (j *JsonMsg) Pub(ctx *context.Context, req *PubReq, msg interface{}) error 
 		amqp.Publishing{
 			ContentType: "text/plain",
 			Body:        data,
+			MessageId:   req.MsgId,
 		})
 	if err != nil {
 		return err
